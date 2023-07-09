@@ -15,7 +15,7 @@ import java.util.ArrayList;
  *
  * @author Usuario
  */
-public class DEstudiante {
+/*public class DEstudiante {
     private ConexionDB con;
     
     public DEstudiante(){
@@ -140,4 +140,5 @@ public class DEstudiante {
         }
         return usuario;
     }
-}
+
+}*/

@@ -11,18 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class POPServide {
+public class POPService {
     private final String HOST = "mail.tecnoweb.org.bo";
     private final int PORT = 110;
 
     private BufferedReader entrada;
     private DataOutputStream salida;
-    private final String USER = "grupo01sa";
-    private final String PASS = "grup001grup001";
+    private final String USER = "grupo06sc";
+    private final String PASS = "grup006grup006";
 
     private Socket sckt;
 
-    public POPServide() {
+    public POPService() {
         try {
             sckt = new Socket(HOST, PORT);
             entrada = new BufferedReader(new InputStreamReader(sckt.getInputStream()));

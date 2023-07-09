@@ -42,7 +42,7 @@ public class SMTPService {
     private Socket sckt;
     private final String HOST = "mail.tecnoweb.org.bo";
     private final int PORT = 25;
-    private final String EMISOR = "grupo01sa@tecnoweb.org.bo";
+    private final String EMISOR = "grupo06sc@tecnoweb.org.bo";
     private BufferedReader entrada;
     private DataOutputStream salida;
 
@@ -59,7 +59,7 @@ public class SMTPService {
     public void sendMessage(String sbjct, String receptor, String message) {
         try {
             System.out.println(entrada.readLine());
-            salida.writeBytes("EHLO mail.tecnoweb.org.bo\r\n");
+            salida.writeBytes("HELO mail.tecnoweb.org.bo\r\n");
             entrada.readLine();
             getMultiline(entrada);
             salida.writeBytes("MAIL FROM: <" + EMISOR + "> \r\n");

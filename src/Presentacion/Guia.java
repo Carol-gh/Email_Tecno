@@ -8,7 +8,16 @@ package Presentacion;
 import Datos.DUsuario;
 import Datos.Usuario;
 import Negocio.NUsuario;
+import Negocio.NArea;
+import Negocio.NModo;
+import Negocio.NPregunta;
+import Negocio.NRespuesta;
+import Negocio.NTipo;
+import java.sql.SQLException;
+
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,19 +25,19 @@ import java.util.List;
  */
 public class Guia {
      private int bandejaLength = 0;
-    private POPServide guiaPopObj;
+    private POPService guiaPopObj;
     private SMTPService guiaSmtpObj;
     private String guiaCmdo = "";
     private String guiaReceptor = "";
     private String guiaParams = "";
 
     public Guia() {
-        guiaPopObj = new POPServide();
+        guiaPopObj = new POPService();
         bandejaLength = guiaPopObj.getBandejaLength();
     }
 
     public void listen() {
-        guiaPopObj = new POPServide();
+        guiaPopObj = new POPService();
         boolean correoValido;
         boolean subjectValido;
         if (guiaPopObj.getBandejaLength() > bandejaLength) {
@@ -102,8 +111,52 @@ public class Guia {
                 return true;
             case "VERUSU":
                 return true;
-            default:
-                return false;
+            // CU2. GESTIONAR PREGUNTA
+            case "LISAREA" :
+                return true;
+            case "INSAREA":
+                return true;
+            case "UPDAREA":
+                return true;
+            case "DELAREA":
+                return true;
+            case "LISPREG":
+                 return true;
+            case "INSPREG":
+                 return true;
+            case "UPDPREG":
+                 return true;
+            case "DELPREG":
+                 return true;
+            case "LISRESP":
+                 return true;
+            case "INSRESP":
+                 return true;
+            case "UPDRESP":
+                return true;
+            case "DELRESP":
+                return true;
+            // CU5. GESTIONAR JUEGOS
+            case "LISMODO":
+                return true;
+            case "INSMODO":
+                return true;
+            case "UPDMODO":
+                return true;
+            case "DELMODO":
+                return true;
+            // CU6. GESTIONAR DESAFIOS
+            case "LISTIPO":
+                return true;
+            case "INSTIPO":
+                return true;
+            case "UPDTIPO":
+                return true;
+            case "DELTIPO":
+               return true;
+            default :
+               return false;
+
         }
     }
 
@@ -136,7 +189,51 @@ public class Guia {
             case "LISUSU":
                 executeLISUSU(this.guiaParams);
                 break;
-            case "INSEST":
+            //------CU2. GESTIONAR PREGUNTAS------//
+            case "LISAREA":
+                executeLISAREA(this.guiaParams);
+            case "INSAREA":
+                executeINSAREA(this.guiaParams);
+            case "UPDAREA":
+                executeUPDAREA(this.guiaParams);
+            case "DELAREA":
+                executeDELAREA(this.guiaParams);
+            case "LISPREG":
+                executeLISPREG(this.guiaParams);
+            case "INSPREG":
+                executeINSPREG(this.guiaParams);
+            case "UPDPREG":
+                executeUPDPREG(this.guiaParams);
+            case "DELPREG":
+                executeDELPREG(this.guiaParams);
+            case "LISRESP":
+                executeLISRESP(this.guiaParams);
+            case "INSRESP":
+                executeINSRESP(this.guiaParams);
+            case "UPDRESP":
+                executeUPDRESP(this.guiaParams);
+            case "DELRESP":
+                executeDELRESP(this.guiaParams);
+            //------CU5. GESTIONAR JUEGOS------//
+            case "LISMODO":
+                executeLISMODO(this.guiaParams);
+            case "INSMODO":
+                executeINSMODO(this.guiaParams);
+            case "UPDMODO":
+                executeUPDMODO(this.guiaParams);
+            case "DELMODO":
+                executeDELMODO(this.guiaParams);
+            //------CU6. GESTIONAR DESAFIOS------//
+            case "LISTIPO":
+                executeLISTIPO(this.guiaParams);
+            case "INSTIPO":
+                executeINSTIPO(this.guiaParams);
+            case "UPDTIPO":
+                executeUPDTIPO(this.guiaParams);
+            case "DELTIPO":
+                executeDELTIPO(this.guiaParams);
+
+            /*case "INSEST":
                 executeINSEST(this.guiaParams);
                 break;
             case "INSDOC":
@@ -159,7 +256,7 @@ public class Guia {
                 break;
             case "VERUSU":
                 executeVERUSU(this.guiaParams);
-                break;
+                break;*/
            //---------------------------------------//     
             default:
                 break;
@@ -174,7 +271,7 @@ public class Guia {
                 + "  <h3> AYUDA: HELP </h3>\n"
                 + "  <h3> Gestionar Usuario </h3>\n"
                 + "  <ul>\n"
-                + "      <li>LISUSU[NOMBRE,EMAIL,TELEFONO, TIPO]</li>\n" 
+                + "      <li>LISUSU[NOMBRE,EMAIL]</li>\n" 
                 + "      <li>INSEST[NOMBRE,EMAIL,PASSWORD,TELEFONO,TIPO]</li>\n"
                 + "      <li>INSDOC[NOMBRE,EMAIL,PASSWORD,TELEFONO,TIPO]</li>\n"
                 + "      <li>INSADM[NOMBRE,EMAIL,PASSWORD,TELEFONO,TIPO]</li>\n"
@@ -183,6 +280,39 @@ public class Guia {
                 + "      <li>UPDADM[NOMBRE,EMAIL,PASSWORD,TELEFONO,TIPO]</li>\n"
                 + "      <li>DELUSU[EMAIL]</li>\n"
                 + "      <li>VERUSU[EMAIL]</li>\n"
+                + "  </ul>\n"
+                + "  <h3> Gestionar Preguntas </h3>\n"
+                + "  <ul>\n"
+                + "      <li>LISAREA[*]</li>\n"
+                + "      <li>INSAREA[NOMBRE,PUNTAJE]</li>\n"
+                + "      <li>UPDAREA[IDAREA,NOMBRE,PUNTAJE]</li>\n"
+                + "      <li>DELAREA[IDAREA]</li>\n"
+                + "  </ul>\n"
+                + "  <ul>\n"
+                + "      <li>LISPREG[AREA]</li>\n"
+                + "      <li>REGPREG[PREGUNTA,AREA]</li>\n"
+                + "      <li>UPDPREG[IDPREGUNTA,PREGUNTA,AREA]</li>\n"
+                + "      <li>ELIMPREG[IDPREGUNTA]</li>\n"
+                + "  </ul>\n"
+                + "  <ul>\n"
+                + "      <li>LISRESP[PREGUNTA]</li>\n"
+                + "      <li>REGRESP[RESPUESTA,CORRECTA,IDPREGUNTA]</li>\n"
+                + "      <li>UPDRESP[IDRESPUESTA,RESPUESTA,CORRECTA,IDPREGUNTA]</li>\n"
+                + "      <li>ELIMRESP[IDRESPUESTA]</li>\n"
+                + "  </ul>\n"
+                + "  <h3> Gestionar Juegos </h3>\n"
+                + "  <ul>\n"
+                + "      <li>LISMODO[NOMBRE]</li>\n"
+                + "      <li>INSMODO[NOMBRE]</li>\n"
+                + "      <li>UPDMODO[NOMBRE]</li>\n"
+                + "      <li>DELMODO[IDMODO]</li>\n"
+                + "  </ul>\n"
+                + "  <h3> Gestionar DesafÃ­os </h3>\n"
+                + "  <ul>\n"
+                + "      <li>LISTIPO[NOMBRE]</li>\n"
+                + "      <li>INSTIPO[NOMBRE]</li>\n"
+                + "      <li>UPDTIPO[NOMBRE]</li>\n"
+                + "      <li>DELTIPO[IDMODO]</li>\n"
                 + "  </ul>\n"
                 + "</body>"
                 + "</html>";
@@ -198,30 +328,173 @@ public class Guia {
     /*==============================
     ===== CU1 GESTIONAR USUARIO ====
     ==============================*/
-    public void executeLISUSU() {
+    public void executeLISUSU(String params) {
         NUsuario nuObj = new NUsuario();
-        String msg = nuObj.listarTodos();
+        String msg = nuObj.listarusu(params);
         sendResponseEmail("RESPUESTA A PETICION LISUSU", msg);
     }
 
-    public void executeINSEST(String params){
+    /*public void executeINSEST(String params){
         NUsuario nuObj = new NUsuario();
-        String msg = nuObj.registrar(params);
+        String msg = nuObj.registrarEst(params);
         sendResponseEmail("RESPUESTA A PETICION INSEST", msg);
     }
     
     public void executeINSDOC(String params){
         NUsuario nuObj = new NUsuario();
-        String msg = nuObj.registrar(params);
+        String msg = nuObj.registrarDoc(params);
         sendResponseEmail("RESPUESTA A PETICION INSEST", msg);
     }  
     
     public void executeINSADM(String params){
         NUsuario nuObj = new NUsuario();
-        String msg = nuObj.insertar(params);
+        String msg = nuObj.insertarDoc(params);
         sendResponseEmail("RESPUESTA A PETICION REGISTRAR USUARIO", msg);
-    }
+    }*/
     /*==============================
     ===== FIN GESTIONAR USUARIO ====
     ==============================*/
+    /*==============================
+    ===== CU2 GESTIONAR PREGUNTAS ====
+    ==============================*/
+    public void executeLISAREA(String params) {
+        NArea nuObj = new NArea();
+        String msg = nuObj.lisarea(params);
+        sendResponseEmail("RESPUESTA A PETICION LISAREA", msg);
+    }
+     
+    public void executeINSAREA(String params) {
+        NArea nuObj = new NArea();
+        String msg = nuObj.regarea(params);
+        sendResponseEmail("RESPUESTA A PETICION INSAREA", msg);
+    }
+      
+    public void executeUPDAREA(String params) {
+        NArea nuObj = new NArea();
+        String msg = nuObj.editarea(params);
+        sendResponseEmail("RESPUESTA A PETICION UPDAREA", msg);
+    }
+      
+    public void executeDELAREA(String params) {
+        NArea nuObj = new NArea();
+        String msg = nuObj.elimarea(params);
+        sendResponseEmail("RESPUESTA A PETICION DELAREA", msg);
+    } 
+
+    public void executeLISPREG(String params) {
+        NPregunta nuObj = new NPregunta();
+        String msg = nuObj.lispregunta(params);
+        sendResponseEmail("RESPUESTA A PETICION LISPREG", msg);
+    }
+     
+    public void executeINSPREG(String params) {
+        NPregunta nuObj = new NPregunta();
+        String msg = null;
+        try {
+            msg = nuObj.regpreg(params);
+        } catch (SQLException ex) {
+            Logger.getLogger(Guia.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sendResponseEmail("RESPUESTA A PETICION INSPREG", msg);
+    }
+      
+    public void executeUPDPREG(String params) {
+        NPregunta nuObj = new NPregunta();
+        String msg = null;
+        try {
+            msg = nuObj.editpregunta(params);
+        } catch (SQLException ex) {
+            Logger.getLogger(Guia.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sendResponseEmail("RESPUESTA A PETICION UPDPREG", msg);
+    }
+      
+    public void executeDELPREG(String params) {
+        NPregunta nuObj = new NPregunta();
+        String msg = nuObj.elimpreg(params);
+        sendResponseEmail("RESPUESTA A PETICION DELPREG", msg);
+    }    
+       
+    public void executeLISRESP(String params) {
+        NRespuesta nuObj = new NRespuesta();
+        String msg = nuObj.lisrespuesta(params);
+        sendResponseEmail("RESPUESTA A PETICION LISRESP", msg);
+    }
+     
+    public void executeINSRESP(String params) {
+        NRespuesta nuObj = new NRespuesta();
+        String msg = nuObj.regrespuesta(params);
+        sendResponseEmail("RESPUESTA A PETICION INSRESP", msg);
+    }
+      
+    public void executeUPDRESP(String params) {
+        NRespuesta nuObj = new NRespuesta();
+        String msg = null;
+        try {
+            msg = nuObj.editrespuesta(params);
+        } catch (SQLException ex) {
+            Logger.getLogger(Guia.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sendResponseEmail("RESPUESTA A PETICION UPDRESP", msg);
+    }
+      
+    public void executeDELRESP(String params) {
+        NRespuesta nuObj = new NRespuesta();
+        String msg = nuObj.elimrespuesta(params);
+        sendResponseEmail("RESPUESTA A PETICION DELRESP", msg);
+    }
+    
+    /*==============================
+    ===== CU5 GESTIONAR JUEGOS ====
+    ==============================*/
+    public void executeLISMODO(String params) {
+        NModo nuObj = new NModo();
+        String msg = nuObj.lismodo(params);
+        sendResponseEmail("RESPUESTA A PETICION LISMODO", msg);
+    }
+     
+    public void executeINSMODO(String params) {
+        NModo nuObj = new NModo();
+        String msg = nuObj.regmodo(params);
+        sendResponseEmail("RESPUESTA A PETICION INSMODO", msg);
+    }
+      
+    public void executeUPDMODO(String params) {
+        NModo nuObj = new NModo();
+        String msg = nuObj.editmodo(params);
+        sendResponseEmail("RESPUESTA A PETICION UPDMODO", msg);
+    }
+    
+    public void executeDELMODO(String params) {
+        NModo nuObj = new NModo();
+        String msg = nuObj.elimmodo(params);
+        sendResponseEmail("RESPUESTA A PETICION DELMODO", msg);
+    }     
+
+    /*==============================
+    ===== CU5 GESTIONAR DESAFIOS ====
+    ==============================*/
+    public void executeLISTIPO(String params) {
+        NTipo nuObj = new NTipo();
+        String msg = nuObj.listipo(params);
+        sendResponseEmail("RESPUESTA A PETICION LISTIPO", msg);
+    }
+     
+    public void executeINSTIPO(String params) {
+        NTipo nuObj = new NTipo();
+        String msg = nuObj.regtipo(params);
+        sendResponseEmail("RESPUESTA A PETICION INSTIPO", msg);
+    }
+      
+    public void executeUPDTIPO(String params) {
+        NTipo nuObj = new NTipo();
+        String msg = nuObj.edittipo(params);
+        sendResponseEmail("RESPUESTA A PETICION UPDTIPO", msg);
+    }
+    
+    public void executeDELTIPO(String params) {
+        NTipo nuObj = new NTipo();
+        String msg = nuObj.elimtipo(params);
+        sendResponseEmail("RESPUESTA A PETICION DELTIPO", msg);
+    } 
 }

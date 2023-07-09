@@ -26,8 +26,7 @@ public class DUsuario {
         String sql = "SELECT * FROM usuarios WHERE email = ? ;";
         try {
             PreparedStatement stmnt = con.conectar().prepareStatement(sql);
-            stmnt.setInt(1, 1);
-            stmnt.setString(2, email);
+            stmnt.setString(1, email);
             ResultSet result = stmnt.executeQuery();
             con.desconectar();
             while (result.next()) {

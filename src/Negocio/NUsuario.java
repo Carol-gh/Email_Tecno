@@ -16,67 +16,87 @@ public class NUsuario {
         boolean existe = dusuObj.checkEmail(email);
         return existe;
     }
-
-    public String ver(String email) {
+    
+     //LISTARUSU[EMAIL, CI, FULLNAME]
+    public String listarusu(String params) {
         String msg = "";
-
-        if (email != null && !email.isEmpty()) {
-            if (email.length() <= 0 || email.length() > 320) {
-                msg = "Content-Type:text/html;\r\n<html>"
+        String[] values = params.split(",");
+        if (values.length == 2) {
+            String emailParam = values[1].trim();
+            String fullnameParam = values[0].trim();
+            String msgErr = "";
+            boolean ok = true;
+            if (emailParam.length() <= 0 || emailParam.length() > 320) {
+                ok = false;
+                msgErr = "Email invalido";
+            }
+            if (ok == true) {
+                DUsuario duObj = new DUsuario();
+                ArrayList<Usuario> usrsResult = duObj.listarTodos();
+                if (!usrsResult.isEmpty()) {
+                    String res = "<h2> Lista de Usuarios </h2>\n"
+                            + "<table border=1>\n"
+                            + "<tr>"
+                            + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">ID</td>"
+                            + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">NOMBRE</td>"
+                            + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">TELEFONO</td>"
+                            + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">EMAIL</td>"
+                            + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">TIPO</td>"
+                            + "</tr>\n";
+                    for (Usuario usr : usrsResult) {
+                        res += usr.LISTUSUtable();
+                    }
+                    res += "</table>";
+                    msg
+                            = "Content-Type:text/html;\r\n<html>"
+                            + "<body>\n"
+                            + "  <h2> COMANDO: LISTARUSU[EMAIL,FULLNAME] </h2>\n"
+                            + res
+                            + "</body>"
+                            + "</html>";
+                    return msg;
+                } else {
+                    msg
+                            = "Content-Type:text/html;\r\n<html>"
+                            + "<body>\n"
+                            + "  <h2> COMANDO: LISTARUSU[EMAIL,FULLNAME] </h2>\n"
+                            + "  <h4>No se encontro registros con los parametros proporcionados</h4>\n"
+                            + "</body>"
+                            + "</html>";
+                }
+            } else {//AQUI
+                msg   
+                        = "Content-Type:text/html;\r\n<html>"
                         + "<body>\n"
-                        + "  <h1>EXCEPCIÓN AL SELECCIONAR USUARIOS</h1>\n"
-                        + "  <h2>COMANDO: LISTARUSU[EMAIL]</h2>\n"
-                        + "  <p>Error en el parámetro 'email'. Debe tener entre 1 y 320 caracteres.</p>\n"
+                        + "  <h1> EXCEPCION AL SELECCIONAR PERSONAS </h1>\n"
+                        + "  <h3>EXCEPCION: " + msgErr + "</h3>\n"
+                        + "  <h2> COMANDO: LISTARUSU[EMAIL,FULLNAME] </h2>\n"
+                        + "  <p>Si desea obviar alguno introduzca '0' </p>\n"
+                        + "  <h3>Ejemplos</h3>\n"
+                        + "  <ul>\n"
+                        + "      <li>LISTARUSU[0, 0] retorna todos los usuarios</li>\n"
+                        + "      <li>LISTARUSU[0, juan] retorna usuarios con nombre 'juan'</li>\n"
+                        + "      <li>LISTARUSU[@outlook, pedro] retorna usuarios con correo '@outlook' y nombre 'pedro'</li>\n"
+                        + "  </ul>\n"
                         + "</body>"
                         + "</html>";
-            } else {
-                try {
-                    DUsuario duObj = new DUsuario();
-                    ArrayList<Usuario> usrsResult = duObj.ver(email);
-                    if (!usrsResult.isEmpty()) {
-                        StringBuilder res = new StringBuilder("<h2>Lista de Usuarios</h2>\n"
-                                + "<table border=1>\n"
-                                + "<tr>"
-                                + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">ID</td>"
-                                + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">ROL</td>"
-                                + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">EMAIL</td>"
-                                + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">CI</td>"
-                                + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">NOMBRE COMP</td>"
-                                + "</tr>\n");
-                        
-                        for (Usuario usr : usrsResult) {
-                            res.append(usr.LISTUSUtable());
-                        }
-                        
-                        res.append("</table>");
-                        msg = "Content-Type:text/html;\r\n<html>"
-                                + "<body>\n"
-                                + "  <h2>COMANDO: LISTARUSU[EMAIL]</h2>\n"
-                                + res.toString()
-                                + "</body>"
-                                + "</html>";
-                    } else {
-                        msg = "Content-Type:text/html;\r\n<html>"
-                                + "<body>\n"
-                                + "  <h2>COMANDO: LISTARUSU[EMAIL]</h2>\n"
-                                + "  <h4>No se encontraron registros con el email proporcionado</h4>\n"
-                                + "</body>"
-                                + "</html>";
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(NUsuario.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
         } else {
-            msg = "Content-Type:text/html;\r\n<html>"
+            msg
+                    = "Content-Type:text/html;\r\n<html>"
                     + "<body>\n"
-                    + "  <h1>EXCEPCIÓN AL SELECCIONAR USUARIOS</h1>\n"
-                    + "  <h2>COMANDO: LISTARUSU[EMAIL]</h2>\n"
-                    + "  <p>Error en el parámetro 'email'. Debe proporcionar un valor válido.</p>\n"
+                    + "  <h1> EXCEPCION AL SELECCIONAR USUARIOS </h1>\n"
+                    + "  <h2> COMANDO: LISTARUSU[EMAIL, CI, FULLNAME] </h2>\n"
+                    + "  <p> Error en parametros, debe llenar todos los parametros, si desea obviar alguno introduzca '0' </p>\n"
+                    + "  <h3>Ejemplos</h3>\n"
+                    + "  <ul>\n"
+                    + "      <li>LISTARUSU[0, 0] retorna todos los usuarios</li>\n"
+                    + "      <li>LISTARUSU[0, juan] retorna usuarios con nombre 'juan'</li>\n"
+                    + "      <li>LISTARUSU[@outlook, pedro] retorna usuarios con correo '@outlook' y nombre 'pedro'</li>\n"
+                    + "  </ul>\n"
                     + "</body>"
                     + "</html>";
         }
-
         return msg;
     }
 

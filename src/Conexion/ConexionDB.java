@@ -12,11 +12,11 @@ import java.sql.SQLException;
  * @author Usuario
  */
 public class ConexionDB {
-    private final String HOST = "127.0.0.1";    /*"mail.tecnoweb.org.bo";*/
+    private final String HOST = "mail.tecnoweb.org.bo";    /*"mail.tecnoweb.org.bo";*/
     private final String PUERTO = "5432";
     private final String DB = "db_grupo06sc"; 
-    private final String USER = "postgres";  /* "grupo06sc"*/
-    private final String PASSWORD = "toor"; /* "grup06grup06"*/
+    private final String USER = "grupo06sc";  /* "grupo06sc"*/
+    private final String PASSWORD = "grup006grup006"; /* "grup06grup06"*/
     
     private static ConexionDB instancia;
     private Connection con;
