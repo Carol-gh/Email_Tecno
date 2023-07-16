@@ -2,6 +2,7 @@ package Presentacion;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class SMTPService {
     private BufferedReader entrada;
     private DataOutputStream salida;
 
-    public SMTPService() {
+    public SMTPService() throws IOException {
         try {
             sckt = new Socket(HOST, PORT);
             entrada = new BufferedReader(new InputStreamReader(sckt.getInputStream()));
@@ -60,7 +61,7 @@ public class SMTPService {
         try {
             System.out.println(entrada.readLine());
             salida.writeBytes("HELO mail.tecnoweb.org.bo\r\n");
-            entrada.readLine();
+            //entrada.readLine();
             getMultiline(entrada);
             salida.writeBytes("MAIL FROM: <" + EMISOR + "> \r\n");
             entrada.readLine();
