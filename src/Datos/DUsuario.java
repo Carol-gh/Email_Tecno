@@ -123,7 +123,7 @@ public class DUsuario {
          return new Message("Excepcion en regusu DUsuario algo salio mal", false);
     }
     
-    public Message registrarEst(String nombre, String email, String telefono, String password,String tipo, String colegio, String carrerainteres, String grado) {
+    public Message registrarEst(String nombre, String email, String telefono, String password, String tipo, String colegio, String carrerainteres, String grado) {
         ArrayList<Usuario> existentUsers = listarTodos();
         boolean nuevoUsr = true;
         for (Usuario usr : existentUsers) {
@@ -135,7 +135,7 @@ public class DUsuario {
         if (nuevoUsr == false) {
             return new Message("Estudiante ya existe", false);
         }
-        String query = "INSERT INTO usuarios(nombre, email, telefono, password,tipo)" + "values(?,?,?,?,?)";
+        String query = "INSERT INTO usuarios(nombre, email, telefono, password, tipo)" + "values(?,?,?,?,?)";
         try {
         PreparedStatement ps = con.conectar().prepareStatement(query);
         ps.setString(1, nombre);
@@ -187,7 +187,6 @@ public class DUsuario {
         ps.setString(4, password);
         ps.setString(5, tipo);
         int result = ps.executeUpdate();
-        con.desconectar();
         ArrayList<Usuario> UsersId = listarTodos();
         int IdUsr=0;
         for (Usuario usr : UsersId) {
@@ -498,17 +497,6 @@ public class DUsuario {
         }
         return new Respuesta("Se ha editado al Docente con éxito!", false); 
     }
-    public Respuesta delete(Integer id) throws SQLException{
-        String query = "DELETE FROM usuarios WHERE id=?";
-         try {
-            PreparedStatement stmnt = con.conectar().prepareStatement(query);
-            int res = stmnt.executeUpdate();
-            con.desconectar();
-        } catch (SQLException e) {
-            System.out.println("Error DUsuario eliminar: " + e);
-        }
-        return new Respuesta("Se ha eliminado al Usuario con exito!", false);
-    }
     
      public Respuesta editadm(int idParam, String nombreParam,String emailParam,String telefonoParam,String passwordParam,String tipoParam,String cargoParam ) {
         String sql = "";
@@ -607,16 +595,62 @@ public class DUsuario {
         return new Respuesta("Se ha editado al Docente con éxito!", false); 
     }
      
-    public Respuesta delete(int id) {
-        String query = "DELETE FROM usuarios WHERE id=?";
-         try {
-            PreparedStatement stmnt = con.conectar().prepareStatement(query);
-            int res = stmnt.executeUpdate();
+    public Respuesta delete(int idParam) {
+        String sql = "SELECT tipo FROM usuarios WHERE id=?";
+        try {
+            PreparedStatement stmnt = con.conectar().prepareStatement(sql);
+            stmnt.setInt(1, idParam);
+            ResultSet set = stmnt.executeQuery();
+
+            if (set.next()) {
+                String tipoUsuario = set.getString(1);
+
+                if (tipoUsuario.equals("E")) {
+                    String query = "DELETE FROM estudiantes WHERE usuario_id=?";
+                    try (PreparedStatement state = con.conectar().prepareStatement(query)) {
+                        state.setInt(1, idParam);
+                        int res1 = state.executeUpdate();
+                    }
+
+                    String query2 = "DELETE FROM usuarios WHERE id=?";
+                    try (PreparedStatement state2 = con.conectar().prepareStatement(query2)) {
+                        state2.setInt(1, idParam);
+                        int res2 = state2.executeUpdate();
+                    }
+                } else if (tipoUsuario.equals("D")) {
+                    String query3 = "DELETE FROM docentes WHERE usuario_id=?";
+                    try (PreparedStatement state3 = con.conectar().prepareStatement(query3)) {
+                        state3.setInt(1, idParam);
+                        int res3 = state3.executeUpdate();
+                    }
+                    String query2 = "DELETE FROM usuarios WHERE id=?";
+                    try (PreparedStatement state2 = con.conectar().prepareStatement(query2)) {
+                        state2.setInt(1, idParam);
+                        int res2 = state2.executeUpdate();
+                    }
+                } else if (tipoUsuario.equals("A")) {
+                    String query4 = "DELETE FROM administrativos WHERE usuario_id=?";
+                    try (PreparedStatement state4 = con.conectar().prepareStatement(query4)) {
+                        state4.setInt(1, idParam);
+                        int res4 = state4.executeUpdate();
+                    }
+                    String query2 = "DELETE FROM usuarios WHERE id=?";
+                    try (PreparedStatement state2 = con.conectar().prepareStatement(query2)) {
+                        state2.setInt(1, idParam);
+                        int res2 = state2.executeUpdate();
+                    }
+                }
+            } else {
+                con.desconectar();
+                return new Respuesta("No se encontró el usuario con el ID especificado.", true);
+            }
+
             con.desconectar();
+            return new Respuesta("Se ha eliminado al Usuario con éxito!", false);
         } catch (SQLException e) {
             System.out.println("Error DUsuario eliminar: " + e);
+            return new Respuesta("Ha ocurrido un error al eliminar al Usuario.", true);
         }
-        return new Respuesta("Se ha eliminado al Usuario con exito!", false);
     }
     
     public ArrayList<Usuario> ver(String email) throws SQLException{

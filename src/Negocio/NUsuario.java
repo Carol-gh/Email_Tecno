@@ -240,22 +240,101 @@ public class NUsuario {
         return msg;
     }
     
-     //REGDOC[NOMBRE,EMAIL,TELEFONO,PASSWORD,TIPO,ESPECIALIDAD]
+    //REGEST[NOMBRE,EMAIL,TELEFONO,PASSWORD,COLEGIO,CARRERAINTERES,GRADO]
+    public String registrarEst(String params) {
+        String msg
+                = "Content-Type:text/html;\r\n<html>"
+                + "<body>\n";
+        String[] values = params.split(",");
+        String tipo = "E";
+        if (values.length == 7) {
+            String nombreParam = values[0].trim();
+            String emailParam = values[1].trim();
+            String telefonoParam = values[2].trim();
+            String passwordParam = values[3].trim();
+            String tipoParam = tipo;
+            String colegioParam = values[4].trim();
+            String carrerainteresParam = values[5].trim();
+            String gradoParam = values[6].trim();
+            boolean ok = true;
+            String msgErr = "";
+            if (tipoParam.length() <= 0 || Generic.esEntero(tipoParam) == true) {
+                msgErr = "Tipo no valido";
+                ok = false;
+            }
+            if (emailParam.length() <= 0 || Generic.esEmailValido(emailParam) == false) {
+                msgErr = "Email no valido";
+                ok = false;
+            }
+            if (passwordParam.length() < 5 || passwordParam.length() > 30) {
+                msgErr = "Password no valida (muy larga o corta, almenos 5 caracteres maximo 30)";
+                ok = false;
+            }
+            if (telefonoParam.length() > 8 ) {
+                msgErr = "telefono no valido";
+                ok = false;
+            }
+            if (nombreParam.length() <= 0 || nombreParam.length() > 100 ) {
+                msgErr = "Nombre completo invalido (almenos 5 caracteres maximo 100)";
+                ok = false;
+            }
+            if (colegioParam.length() <= 0 || colegioParam.length() > 100 ) {
+                msgErr = "Nombre colegio invalido (almenos 5 caracteres maximo 100)";
+                ok = false;
+            }
+            if (carrerainteresParam.length() < 5 || carrerainteresParam.length() > 100 ) {
+                msgErr = "Nombre de carrera invalido (almenos 5 caracteres maximo 100)";
+                ok = false;
+            }
+            if (gradoParam.length() < 0 || gradoParam.length() > 10 ) {
+                msgErr = "Grado invalido (almenos 1 caracteres maximo 10)";
+                ok = false;
+            }
+            if (ok == true) {
+                DUsuario duObj = new DUsuario();
+                Message result = duObj.registrarEst(nombreParam, emailParam, telefonoParam, passwordParam, tipoParam,colegioParam,carrerainteresParam, gradoParam );
+                msg
+                        += "<h1> INSEST EJECUTADO </h1>\n"
+                        +  "<h3>RESPUESTA: " + result.msg + "</h3>\n";
+            } else {
+                msg
+                        += "<h1> EXCEPCION AL REGISTRAR ESTUDIANTE </h1>\n"
+                        +  "<h3>EXCEPCION: " + msgErr + "</h3>\n";
+            }
+        } else {
+            msg
+                    += " <h1> EXCEPCION AL INSERTAR ESTUDIANTE </h1>\n"
+                    + "  <h2> COMANDO: INSEST[NAME,EMAIL,TELEFONO,PASSWORD,COLEGIO, CARRERAINTERES,GRADO] </h2>\n"
+                    + "  <p> Error en parametros, debe llenar todos los parametros</p>\n"
+                    + "  <h3>Ejemplos</h3>\n"
+                    + "  <ul>\n"
+                    + "      <li>INSEST[pedro gutierrez vargas, pedro@gmail.com, 74944397, 12345678, Don Bosco, Economía, Quinto]</li>\n"
+                    + "      <li>INSEST[sara leon deliz, sara@onmicrosoft.com, 68931912, 989918, Don Bosco, Finanzas, Sexto]</li>\n"
+                    + "  </ul>\n";
+        }
+        msg
+                += "</body>"
+                + "</html>";
+        return msg;
+    }
+    
+     //REGDOC[NOMBRE,EMAIL,TELEFONO,PASSWORD,ESPECIALIDAD]
     public String registrarDoc(String params) {
         String msg
                 = "Content-Type:text/html;\r\n<html>"
                 + "<body>\n";
         String[] values = params.split(",");
-        if (values.length == 6) {
+        String tipo = "D";
+        if (values.length == 5) {
             String nombreParam = values[0].trim();
             String emailParam = values[1].trim();
             String telefonoParam = values[2].trim();
             String passwordParam = values[3].trim();
-            String tipoParam = values[4].trim();
-            String especialidadParam = values[5].trim();
+            String tipoParam = tipo;
+            String especialidadParam = values[4].trim();
             boolean ok = true;
             String msgErr = "";
-            if (tipoParam.length() <= 0 ) {
+            if (tipoParam.length() <= 0 || Generic.esEntero(tipoParam) == true) {
                 msgErr = "Tipo no valido";
                 ok = false;
             }
@@ -293,12 +372,12 @@ public class NUsuario {
         } else {
             msg
                     += " <h1> EXCEPCION AL INSERTAR DOCENTE </h1>\n"
-                    + "  <h2> COMANDO: INSDOC[NAME,EMAIL,TELEFONO,PASSWORD,TIPO,ESPECIALIDAD] </h2>\n"
+                    + "  <h2> COMANDO: INSDOC[NAME,EMAIL,TELEFONO,PASSWORD,ESPECIALIDAD] </h2>\n"
                     + "  <p> Error en parametros, debe llenar todos los parametros</p>\n"
                     + "  <h3>Ejemplos</h3>\n"
                     + "  <ul>\n"
-                    + "      <li>INSDOC[pedro gutierrez vargas, pedro@gmail.com, 74944397, 12345678, D, Matematicas]</li>\n"
-                    + "      <li>INSDOC[sara leon deliz, sara@onmicrosoft.com, 68931912, 989918, D, Literatura]</li>\n"
+                    + "      <li>INSDOC[pedro gutierrez vargas, pedro@gmail.com, 74944397, 12345678, Matematicas]</li>\n"
+                    + "      <li>INSDOC[sara leon deliz, sara@onmicrosoft.com, 68931912, 989918, Literatura]</li>\n"
                     + "  </ul>\n";
         }
         msg
@@ -307,22 +386,23 @@ public class NUsuario {
         return msg;
     }
     
-    //REGADM[NOMBRE,EMAIL,TELEFONO,PASSWORD,TIPO,CARGO]
+    //REGADM[NOMBRE,EMAIL,TELEFONO,PASSWORD,CARGO]
     public String registrarAdm(String params) {
         String msg
                 = "Content-Type:text/html;\r\n<html>"
                 + "<body>\n";
         String[] values = params.split(",");
+        String tipo = "A";
         if (values.length == 5) {
             String nombreParam = values[0].trim();
             String emailParam = values[1].trim();
             String telefonoParam = values[2].trim();
             String passwordParam = values[3].trim();
-            String tipoParam = values[4].trim();
-            String cargoParam = values[5].trim();
+            String tipoParam = tipo;
+            String cargoParam = values[4].trim();
             boolean ok = true;
             String msgErr = "";
-            if (tipoParam.length() <= 0 || Generic.esEntero(tipoParam) == false) {
+            if (tipoParam.length() <= 0 || Generic.esEntero(tipoParam) == true) {
                 msgErr = "Tipo no valido";
                 ok = false;
             }
@@ -360,12 +440,12 @@ public class NUsuario {
         } else {
             msg
                     += " <h1> EXCEPCION AL INSERTAR ADMINISTRATIVOS </h1>\n"
-                    + "  <h2> COMANDO: INSADM[NAME,EMAIL,TELEFONO,PASSWORD,TIPO,ESPECIALIDAD] </h2>\n"
+                    + "  <h2> COMANDO: INSADM[NAME,EMAIL,TELEFONO,PASSWORD,CARGO] </h2>\n"
                     + "  <p> Error en parametros, debe llenar todos los parametros</p>\n"
                     + "  <h3>Ejemplos</h3>\n"
                     + "  <ul>\n"
-                    + "      <li>INSADM[pedro gutierrez vargas, pedro@gmail.com, 74944397, 12345678, D, Jefe Sistemas]</li>\n"
-                    + "      <li>INSADM[sara leon deliz, sara@onmicrosoft.com, 68931912, 989918, D, Secretario]</li>\n"
+                    + "      <li>INSADM[pedro gutierrez vargas, pedro@gmail.com, 74944397, 12345678, Jefe Sistemas]</li>\n"
+                    + "      <li>INSADM[sara leon deliz, sara@onmicrosoft.com, 68931912, 989918, Secretario]</li>\n"
                     + "  </ul>\n";
         }
         msg
@@ -374,22 +454,23 @@ public class NUsuario {
         return msg;
     }
     
-    //UPDEST[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD, TIPO,COLEGIO,CARRERAINTERES,GRADO]
+    //UPDEST[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD,COLEGIO,CARRERAINTERES,GRADO]
     public String editest(String params) {
         String msg
             = "Content-Type:text/html;\r\n<html>"
             + "<body>\n";
         String[] values = params.split(",");
-        if (values.length == 3) { 
+        String tipo = "E";
+        if (values.length == 8) { 
             int idParam = Integer.parseInt(values[0].trim());       
             String nombreParam = values[1].trim();
             String emailParam = (values[2].trim());       
             String telefonoParam = (values[3].trim());  
             String passwordParam = (values[4].trim());  
-            String tipoParam = (values[5].trim());  
-            String colegioParam = (values[6].trim()); 
-            String carrerainteresParam = (values[7].trim()); 
-            String gradoParam = (values[8].trim()); 
+            String tipoParam = tipo;  
+            String colegioParam = (values[5].trim()); 
+            String carrerainteresParam = (values[6].trim()); 
+            String gradoParam = (values[7].trim()); 
             boolean ok = true;
             String msgErr = "";
             
@@ -414,19 +495,19 @@ public class NUsuario {
                 msgErr = "Password no valido, esta vacio!";
                 ok = false;
             }
-            if (values[5].trim().length() <=0) {
+            if (tipoParam.length() <=0) {
                 msgErr = "Tipo no valido, esta vacio!";
                 ok = false;
             }
-            if (values[6].trim().length() <=0) {
+            if (values[5].trim().length() <=0) {
                 msgErr = "Colegio no valido, esta vacio!";
                 ok = false;
             }
-            if (values[7].trim().length() <=0) {
+            if (values[6].trim().length() <=0) {
                 msgErr = "CarreraInteres no valido, esta vacio!";
                 ok = false;
             }
-            if (values[8].trim().length() <=0) {
+            if (values[7].trim().length() <=0) {
                 msgErr = "Grado no valido, esta vacio!";
                 ok = false;
             }
@@ -444,11 +525,11 @@ public class NUsuario {
         } else {
             msg
                 += " <h1> EXCEPCION AL EDITAR ESTUDIANTE </h1>\n"
-                + "  <h2> COMANDO: UPDEST[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD, TIPO,COLEGIO,CARRERAINTERES,GRADO] </h2>\n"
+                + "  <h2> COMANDO: UPDEST[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD,COLEGIO,CARRERAINTERES,GRADO] </h2>\n"
                 + "  <p> Error en parametros, debe llenar todos los parametros</p>\n"
                 + "  <h3>Ejemplo</h3>\n"
                 + "  <ul>\n"
-                + "      <li>UPDEST[1, Juana, juana@gmail.com, 74944397, 12345678,E, Don Bosco, Economia, Quinto]</li>\n"
+                + "      <li>UPDEST[1, Juana,juana@gmail.com,74944397,12345678,Don Bosco,Economia,Quinto]</li>\n"
                 + "  </ul>\n";
         }
         msg
@@ -458,20 +539,21 @@ public class NUsuario {
         return msg;
     }
     
-    //UPDDOC[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD, TIPO,ESPECIALIDAD]
+    //UPDDOC[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD,ESPECIALIDAD]
     public String editdoc(String params) {
         String msg
             = "Content-Type:text/html;\r\n<html>"
             + "<body>\n";
         String[] values = params.split(",");
-        if (values.length == 6) { 
+        String tipo = "D";
+        if (values.length == 5) { 
             int idParam = Integer.parseInt(values[0].trim());       
             String nombreParam = values[1].trim();
             String emailParam = (values[2].trim());       
             String telefonoParam = (values[3].trim());  
             String passwordParam = (values[4].trim());  
-            String tipoParam = (values[5].trim());  
-            String especialidadParam = (values[6].trim());  
+            String tipoParam = tipo;  
+            String especialidadParam = (values[5].trim());  
             boolean ok = true;
             String msgErr = "";
             
@@ -496,11 +578,11 @@ public class NUsuario {
                 msgErr = "Password no valido, esta vacio!";
                 ok = false;
             }
-            if (values[5].trim().length() <=0) {
+            if (tipoParam.length() <=0) {
                 msgErr = "Tipo no valido, esta vacio!";
                 ok = false;
             }
-            if (values[6].trim().length() <=0) {
+            if (values[5].trim().length() <=0) {
                 msgErr = "Especialidad no valido, esta vacio!";
                 ok = false;
             }
@@ -518,11 +600,11 @@ public class NUsuario {
         } else {
             msg
                 += " <h1> EXCEPCION AL EDITAR DOCENTE </h1>\n"
-                + "  <h2> COMANDO: UPDEST[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD, TIPO,ESPECIALIDAD] </h2>\n"
+                + "  <h2> COMANDO: UPDDOC[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD,ESPECIALIDAD] </h2>\n"
                 + "  <p> Error en parametros, debe llenar todos los parametros</p>\n"
                 + "  <h3>Ejemplo</h3>\n"
                 + "  <ul>\n"
-                + "      <li>UPDEST[1, Juana, juana@gmail.com, 74944397, 12345678,E, Literatura]</li>\n"
+                + "      <li>UPDDOC[1,Juana,juana@gmail.com,74944397,12345678,Literatura]</li>\n"
                 + "  </ul>\n";
         }
         msg
@@ -532,20 +614,21 @@ public class NUsuario {
         return msg;
     }
 
-    //UPDEST[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD, TIPO,COLEGIO,CARRERAINTERES,GRADO]
+    //UPDEST[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD,CARGO]
     public String editadm(String params) {
         String msg
             = "Content-Type:text/html;\r\n<html>"
             + "<body>\n";
         String[] values = params.split(",");
-        if (values.length == 3) { 
+        String tipo = "A";
+        if (values.length == 6) { 
             int idParam = Integer.parseInt(values[0].trim());       
             String nombreParam = values[1].trim();
             String emailParam = (values[2].trim());       
             String telefonoParam = (values[3].trim());  
             String passwordParam = (values[4].trim());  
-            String tipoParam = (values[5].trim());  
-            String cargoParam = (values[6].trim()); 
+            String tipoParam = tipo;  
+            String cargoParam = (values[5].trim()); 
             boolean ok = true;
             String msgErr = "";
             
@@ -570,11 +653,11 @@ public class NUsuario {
                 msgErr = "Password no valido, esta vacio!";
                 ok = false;
             }
-            if (values[5].trim().length() <=0) {
+            if (tipoParam.length() <=0) {
                 msgErr = "Tipo no valido, esta vacio!";
                 ok = false;
             }
-            if (values[6].trim().length() <=0) {
+            if (values[5].trim().length() <=0) {
                 msgErr = "Cargo no valido, esta vacio!";
                 ok = false;
             }
@@ -592,11 +675,11 @@ public class NUsuario {
         } else {
             msg
                 += " <h1> EXCEPCION AL EDITAR ADMINISTRATIVO </h1>\n"
-                + "  <h2> COMANDO: UPDEST[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD, TIPO,CARGO] </h2>\n"
+                + "  <h2> COMANDO: UPDADM[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD,CARGO] </h2>\n"
                 + "  <p> Error en parametros, debe llenar todos los parametros</p>\n"
                 + "  <h3>Ejemplo</h3>\n"
                 + "  <ul>\n"
-                + "      <li>UPDEST[1, Juana, juana@gmail.com, 74944397, 12345678,E, Don Bosco, Jefe de carrera]</li>\n"
+                + "      <li>UPDADM[1,Juana,juana@gmail.com,74944397,12345678,Don Bosco,Jefe de carrera]</li>\n"
                 + "  </ul>\n";
         }
         msg
@@ -636,84 +719,7 @@ public class NUsuario {
         }
         return msg;  //arreglar
     }
-
-    //REGEST[NOMBRE,EMAIL,TELEFONO,PASSWORD,TIPO,COLEGIO, CARRERAINTERES, GRADO]
-    public String registrarEst(String params) {
-        String msg
-                = "Content-Type:text/html;\r\n<html>"
-                + "<body>\n";
-        String[] values = params.split(",");
-        if (values.length == 5) {
-            String nombreParam = values[0].trim();
-            String emailParam = values[1].trim();
-            String telefonoParam = values[2].trim();
-            String passwordParam = values[3].trim();
-            String tipoParam = values[4].trim();
-            String colegioParam = values[5].trim();
-            String carrerainteresParam = values[6].trim();
-            String gradoParam = values[7].trim();
-            boolean ok = true;
-            String msgErr = "";
-            if (tipoParam.length() <= 0 || Generic.esEntero(tipoParam) == false) {
-                msgErr = "Tipo no valido";
-                ok = false;
-            }
-            if (emailParam.length() <= 0 || Generic.esEmailValido(emailParam) == false) {
-                msgErr = "Email no valido";
-                ok = false;
-            }
-            if (passwordParam.length() < 5 || passwordParam.length() > 30) {
-                msgErr = "Password no valida (muy larga o corta, almenos 5 caracteres maximo 30)";
-                ok = false;
-            }
-            if (telefonoParam.length() > 8 ) {
-                msgErr = "telefono no valido";
-                ok = false;
-            }
-            if (nombreParam.length() < 5 || nombreParam.length() > 100 ) {
-                msgErr = "Nombre completo invalido (almenos 5 caracteres maximo 100)";
-                ok = false;
-            }
-            if (colegioParam.length() < 5 || colegioParam.length() > 100 ) {
-                msgErr = "Nombre colegio invalido (almenos 5 caracteres maximo 100)";
-                ok = false;
-            }
-            if (carrerainteresParam.length() < 5 || carrerainteresParam.length() > 100 ) {
-                msgErr = "Nombre de carrera invalido (almenos 5 caracteres maximo 100)";
-                ok = false;
-            }
-            if (gradoParam.length() < 0 || gradoParam.length() > 10 ) {
-                msgErr = "Grado invalido (almenos 1 caracteres maximo 10)";
-                ok = false;
-            }
-            if (ok == true) {
-                DUsuario duObj = new DUsuario();
-                Message result = duObj.registrarEst(nombreParam, emailParam, telefonoParam, passwordParam, tipoParam,colegioParam,carrerainteresParam, gradoParam );
-                msg
-                        += "<h1> INSEST EJECUTADO </h1>\n"
-                        +  "<h3>RESPUESTA: " + result.msg + "</h3>\n";
-            } else {
-                msg
-                        += "<h1> EXCEPCION AL REGISTRAR ESTUDIANTE </h1>\n"
-                        +  "<h3>EXCEPCION: " + msgErr + "</h3>\n";
-            }
-        } else {
-            msg
-                    += " <h1> EXCEPCION AL INSERTAR ESTUDIANTE </h1>\n"
-                    + "  <h2> COMANDO: INSEST[NAME,EMAIL,TELEFONO,PASSWORD,TIPO,COLEGIO, CARRERAINTERES,GRADO] </h2>\n"
-                    + "  <p> Error en parametros, debe llenar todos los parametros</p>\n"
-                    + "  <h3>Ejemplos</h3>\n"
-                    + "  <ul>\n"
-                    + "      <li>INSEST[pedro gutierrez vargas, pedro@gmail.com, 74944397, 12345678, E, Don Bosco, Economía, Quinto]</li>\n"
-                    + "      <li>INSEST[sara leon deliz, sara@onmicrosoft.com, 68931912, 989918, E, Don Bosco, Finanzas, Sexto]</li>\n"
-                    + "  </ul>\n";
-        }
-        msg
-                += "</body>"
-                + "</html>";
-        return msg;
-    }
-        
+    
 }
 
     

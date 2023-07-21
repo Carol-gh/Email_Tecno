@@ -11,6 +11,7 @@ import Negocio.NUsuario;
 import Negocio.NArea;
 import Negocio.NModo;
 import Negocio.NPregunta;
+import Negocio.NRanking;
 import Negocio.NRespuesta;
 import Negocio.NTipo;
 import java.io.IOException;
@@ -157,6 +158,18 @@ public class Guia {
                 return true;
             case "DELTIPO":
                return true;
+            case "LISRANKCOL":
+                return true;
+            case "LISRANKGEN":
+                return true;
+            case "LISTJUEGO_MODO":
+                return true;  
+            case "LISTJUEGO_COLEGIO":
+                return true;
+            case "LISTNOTAAREA":
+                return true;  
+            case "LISTTIPO_DESAFIO":
+                return true;
             default :
                return false;
 
@@ -279,7 +292,28 @@ public class Guia {
             case "DELTIPO":
                 executeDELTIPO(this.guiaParams);
                  break;
-           //---------------------------------------//     
+            //---------------------------------------//     
+            //------CU7. GESTIONAR RANKING------//
+            case "LISRANKCOL":
+                executeLISRANKCOL(this.guiaParams);
+                 break;
+ /*           case "LISRANKGEN":
+                executeLISRANKGEN(this.guiaParams);
+                 break;
+            //---------------------------------------//
+            //------CU8. REPORTES Y ESTADISTICAS------//
+            case "LISTJUEGO_MODO":
+                executeLISTJUEGO_MODO(this.guiaParams);
+                 break;
+            case "LISTJUEGO_COLEGIO":
+                executeLISTJUEGO_COLEGIO(this.guiaParams);
+                 break;
+            case "LISTNOTAAREA":
+                executeLISTNOTAAREA(this.guiaParams);
+                 break; 
+            case "LISTTIPO_DESAFIO":
+                executeLISTTIPO_DESAFIO(this.guiaParams);
+                 break;*/
             default:
                 break;
         }
@@ -295,46 +329,53 @@ public class Guia {
                 + "  <ul>\n"
                 + "      <li>LISUSUTODOS[*]</li>\n" 
                 + "      <li>LISUSU[NOMBRE,EMAIL]</li>\n" 
-                + "      <li>INSEST[NOMBRE,EMAIL,TELEFONO,PASSWORD,TIPO,COLEGIO,CARRERAINTERES,GRADO]</li>\n"
-                + "      <li>INSDOC[NOMBRE,EMAIL,TELEFONO,PASSWORD,TIPO,ESPECIALIDAD]</li>\n"
-                + "      <li>INSADM[NOMBRE,EMAIL,TELEFONO,PASSWORD,TIPO, CARGO]</li>\n"
-                + "      <li>UPDEST[NOMBRE,EMAIL,TELEFONO,PASSWORD,TIPO]</li>\n"
-                + "      <li>UPDDOC[NOMBRE,EMAIL,TELEFONO,PASSWORD,TIPO]</li>\n"
-                + "      <li>UPDADM[NOMBRE,EMAIL,TELEFONO,PASSWORD,TIPO]</li>\n"
+                + "      <li>INSEST[NOMBRE,EMAIL,TELEFONO,PASSWORD,COLEGIO,CARRERAINTERES,GRADO]</li>\n"
+                + "      <li>INSDOC[NOMBRE,EMAIL,TELEFONO,PASSWORD,ESPECIALIDAD]</li>\n"
+                + "      <li>INSADM[NOMBRE,EMAIL,TELEFONO,PASSWORD,CARGO]</li>\n"
+                + "      <li>UPDEST[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD,COLEGIO,CARRERAINTERES,GRADO]</li>\n"
+                + "      <li>UPDDOC[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD,ESPECIALIDAD]</li>\n"
+                + "      <li>UPDADM[ID,NOMBRE,EMAIL,TELEFONO,PASSWORD,CARGO]</li>\n"
                 + "      <li>DELUSU[ID]</li>\n"
                 + "  </ul>\n"
-                + "  <h3> Gestionar Preguntas </h3>\n"
+                + "  <h3> Gestionar Areas </h3>\n"
                 + "  <ul>\n"
                 + "      <li>LISAREA[*]</li>\n"
                 + "      <li>INSAREA[NOMBRE,PUNTAJE]</li>\n"
                 + "      <li>UPDAREA[IDAREA,NOMBRE,PUNTAJE]</li>\n"
                 + "      <li>DELAREA[IDAREA]</li>\n"
                 + "  </ul>\n"
+                + "  <h3> Gestionar Preguntas </h3>\n"
                 + "  <ul>\n"
                 + "      <li>LISPREG[AREA]</li>\n"
                 + "      <li>REGPREG[PREGUNTA,AREA]</li>\n"
                 + "      <li>UPDPREG[IDPREGUNTA,PREGUNTA,AREA]</li>\n"
                 + "      <li>ELIMPREG[IDPREGUNTA]</li>\n"
                 + "  </ul>\n"
+                + "  <h3> Gestionar Respuestas </h3>\n"
                 + "  <ul>\n"
                 + "      <li>LISRESP[PREGUNTA]</li>\n"
                 + "      <li>REGRESP[RESPUESTA,CORRECTA,IDPREGUNTA]</li>\n"
                 + "      <li>UPDRESP[IDRESPUESTA,RESPUESTA,CORRECTA,IDPREGUNTA]</li>\n"
                 + "      <li>ELIMRESP[IDRESPUESTA]</li>\n"
                 + "  </ul>\n"
-                + "  <h3> Gestionar Juegos </h3>\n"
+                + "  <h3> Gestionar Modos de Juego </h3>\n"
                 + "  <ul>\n"
                 + "      <li>LISMODO[NOMBRE]</li>\n"
                 + "      <li>INSMODO[NOMBRE]</li>\n"
                 + "      <li>UPDMODO[NOMBRE]</li>\n"
                 + "      <li>DELMODO[IDMODO]</li>\n"
                 + "  </ul>\n"
-                + "  <h3> Gestionar DesafÃ­os </h3>\n"
+                + "  <h3> Gestionar Tipo DesafÃ­os </h3>\n"
                 + "  <ul>\n"
                 + "      <li>LISTIPO[NOMBRE]</li>\n"
                 + "      <li>INSTIPO[NOMBRE]</li>\n"
                 + "      <li>UPDTIPO[NOMBRE]</li>\n"
                 + "      <li>DELTIPO[IDMODO]</li>\n"
+                + "  </ul>\n"
+                + "  <h3> Gestionar Ranking </h3>\n"
+                + "  <ul>\n"
+                + "      <li>LISRANKCOL[*]</li>\n"
+
                 + "  </ul>\n"
                 + "</body>"
                 + "</html>";
@@ -552,4 +593,13 @@ public class Guia {
         String msg = nuObj.elimtipo(params);
         sendResponseEmail("RESPUESTA A PETICION DELTIPO", msg);
     } 
+    
+    /*==============================
+    ===== CU5 GESTIONAR RANKING ====
+    ==============================*/
+    public void executeLISRANKCOL(String params) {
+        NRanking nuObj = new NRanking();
+        String msg = nuObj.listrankingcol(params);
+        sendResponseEmail("RESPUESTA A PETICION LISRANKCOL", msg);
+    }                
 }
