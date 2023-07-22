@@ -74,7 +74,7 @@ public class NPregunta {
                     + "  <h3>Ejemplos</h3>\n"
                     + "  <ul>\n"
                     + "      <li>LISAREA[0] retorna todos las preguntas</li>\n"
-                    + "      <li>LISAREA[HISTORIA] retorna todos las preguntas del area HISTORIA</li>\n"
+                    + "      <li>LISAREA[Historia] retorna todos las preguntas del area HISTORIA</li>\n"
                     + "  </ul>\n"
                     + "</body>"
                     + "</html>";
@@ -123,7 +123,7 @@ public class NPregunta {
                 + "  <p> Error en parametros, debe llenar todos los parametros</p>\n"
                 + "  <h3>Ejemplo</h3>\n"
                 + "  <ul>\n"
-                + "      <li>INSPREG[¿Esto es una pregunta?,Historia]</li>\n"
+                + "      <li>INSPREG[Esto es una pregunta,Historia]</li>\n"
                 + "  </ul>\n";
         }
         msg

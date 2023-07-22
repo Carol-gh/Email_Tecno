@@ -49,7 +49,7 @@ public class NUsuario {
                     msg
                             = "Content-Type:text/html;\r\n<html>"
                             + "<body>\n"
-                            + "  <h2> COMANDO: LISUSU[*] </h2>\n"
+                            + "  <h2> COMANDO: LISUSUTODOS[*] </h2>\n"
                             + res
                             + "</body>"
                             + "</html>";
@@ -275,7 +275,7 @@ public class NUsuario {
                 ok = false;
             }
             if (nombreParam.length() <= 0 || nombreParam.length() > 100 ) {
-                msgErr = "Nombre completo invalido (almenos 5 caracteres maximo 100)";
+                msgErr = "Nombre completo invalido (almenos 1 caracteres maximo 100)";
                 ok = false;
             }
             if (colegioParam.length() <= 0 || colegioParam.length() > 100 ) {
@@ -422,8 +422,8 @@ public class NUsuario {
                 msgErr = "Nombre completo invalido (almenos 5 caracteres maximo 100)";
                 ok = false;
             }
-            if (cargoParam.length() < 5 || cargoParam.length() > 100 ) {
-                msgErr = "Cargo invalido (almenos 5 caracteres maximo 100)";
+            if (cargoParam.length() <=0 || cargoParam.length() > 255 ) {
+                msgErr = "Cargo invalido (almenos 1 caracteres maximo 100)";
                 ok = false;
             }
             if (ok == true) {
@@ -444,8 +444,8 @@ public class NUsuario {
                     + "  <p> Error en parametros, debe llenar todos los parametros</p>\n"
                     + "  <h3>Ejemplos</h3>\n"
                     + "  <ul>\n"
-                    + "      <li>INSADM[pedro gutierrez vargas, pedro@gmail.com, 74944397, 12345678, Jefe Sistemas]</li>\n"
-                    + "      <li>INSADM[sara leon deliz, sara@onmicrosoft.com, 68931912, 989918, Secretario]</li>\n"
+                    + "      <li>INSADM[pedro gutierrez vargas, pedro@gmail.com, 74944397, 12345678,Auxiliar]</li>\n"
+                    + "      <li>INSADM[sara leon deliz, sara@onmicrosoft.com, 68931912, 989918, Secretaria]</li>\n"
                     + "  </ul>\n";
         }
         msg

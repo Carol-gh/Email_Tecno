@@ -90,8 +90,9 @@ public class DPregunta {
             return new Respuesta("La pregunta ya existe", false);
         }
         
-        String getArea = "SELECT id FROM areas WHERE nombre =" + areaParam;
+        String getArea = "SELECT id FROM areas WHERE nombre = ?";
         PreparedStatement stmt = connection.conectar().prepareStatement(getArea);
+        stmt.setString(1, areaParam); // Establecer el valor del parámetro de forma segura
         ResultSet rs = stmt.executeQuery();
         
         if (rs.next()) {

@@ -103,7 +103,7 @@ public class NRespuesta {
             = "Content-Type:text/html;\r\n<html>"
             + "<body>\n";
         String[] values = params.split(",");
-        if (values.length == 2) {                     
+        if (values.length == 3) {                     
             String textoParam = values[0].trim();
             boolean correctaParam = Boolean.parseBoolean(values[1].trim());
             int idPreguntaParam = Integer.parseInt(values[2].trim());

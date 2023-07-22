@@ -37,7 +37,6 @@ public class NModo {
                         + "<tr>"
                         + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">ID</td>"                 
                         + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">NOMBRE</td>"
-                        + "<td style=\"font-size: 16px; font-weight: 800; padding: 10px;\">PUNTAJE</td>"
                         + "</tr>\n";
                     for (Modo modo : actsResult) {
                         res += modo.toLISMODOtable();

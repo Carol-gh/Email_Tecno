@@ -38,7 +38,7 @@ public class Guia {
         bandejaLength = guiaPopObj.getBandejaLength();
     }
 
-    public void listen() {
+    public void listen() throws SQLException {
         guiaPopObj = new POPService();
         boolean correoValido;
         boolean subjectValido;
@@ -48,18 +48,14 @@ public class Guia {
             List<String> msg = guiaPopObj.getEmail(bandejaLength);
             correoValido = checkEmisor(msg);
             subjectValido = checkSubject(msg);
-            if (correoValido == true && subjectValido == true) {
+            if (subjectValido == true) {
                 System.out.println("Comando: " + this.guiaCmdo);
                 if (!this.guiaParams.equals("")) {
                     System.out.println("Parametros: " + this.guiaParams);
                 }
                 executeCmdo(this.guiaCmdo);
             } else {
-                if (correoValido == false) {
-                    System.out.println("Emisor no valido...cerrando conx");
-                } else {
                     System.out.println("Subject no valido...cerrando conx");
-                }
             }
         }
         guiaPopObj.close();
@@ -197,7 +193,7 @@ public class Guia {
         return true;
     }
 
-    public void executeCmdo(String cmdo) {
+    public void executeCmdo(String cmdo) throws SQLException {
         switch (cmdo) {
             case "HELP":
                 executeHELP();
@@ -347,14 +343,14 @@ public class Guia {
                 + "  <h3> Gestionar Preguntas </h3>\n"
                 + "  <ul>\n"
                 + "      <li>LISPREG[AREA]</li>\n"
-                + "      <li>REGPREG[PREGUNTA,AREA]</li>\n"
+                + "      <li>INSPREG[PREGUNTA,AREA]</li>\n"
                 + "      <li>UPDPREG[IDPREGUNTA,PREGUNTA,AREA]</li>\n"
                 + "      <li>ELIMPREG[IDPREGUNTA]</li>\n"
                 + "  </ul>\n"
                 + "  <h3> Gestionar Respuestas </h3>\n"
                 + "  <ul>\n"
                 + "      <li>LISRESP[PREGUNTA]</li>\n"
-                + "      <li>REGRESP[RESPUESTA,CORRECTA,IDPREGUNTA]</li>\n"
+                + "      <li>INSRESP[RESPUESTA,CORRECTA,IDPREGUNTA]</li>\n"
                 + "      <li>UPDRESP[IDRESPUESTA,RESPUESTA,CORRECTA,IDPREGUNTA]</li>\n"
                 + "      <li>ELIMRESP[IDRESPUESTA]</li>\n"
                 + "  </ul>\n"
@@ -483,14 +479,10 @@ public class Guia {
         sendResponseEmail("RESPUESTA A PETICION LISPREG", msg);
     }
      
-    public void executeINSPREG(String params) {
+    public void executeINSPREG(String params) throws SQLException {
         NPregunta nuObj = new NPregunta();
         String msg = null;
-        try {
-            msg = nuObj.regpreg(params);
-        } catch (SQLException ex) {
-            Logger.getLogger(Guia.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        msg = nuObj.regpreg(params);
         sendResponseEmail("RESPUESTA A PETICION INSPREG", msg);
     }
       
